@@ -4,6 +4,7 @@ import '../../common/extensions';
 
 import { inject, injectable, named } from 'inversify';
 
+import { Disposable } from 'vscode';
 import { ICommandManager } from '../../common/application/types';
 import { IDisposable, Resource } from '../../common/types';
 import { debounceSync } from '../../common/utils/decorators';
@@ -21,6 +22,7 @@ import {
     LanguageServerType,
 } from '../types';
 import { traceDecoratorError, traceDecoratorVerbose } from '../../logging';
+import { Middleware } from 'vscode-languageclient';
 
 @injectable()
 export class NodeLanguageServerManager implements ILanguageServerManager {
@@ -89,6 +91,14 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
     public disconnect() {
         this.connected = false;
         this.middleware?.disconnect();
+    }
+
+    // QUESTIONS:
+    // Better way to install the injected middleware rather than leveraging existing LanguageClientMiddleware.notebookAddon?
+    public setNotebookMiddleware(notebookAddon: Middleware & Disposable): void {
+        if (this.middleware) {
+            this.middleware.notebookAddon = notebookAddon;
+        }
     }
 
     @debounceSync(1000)

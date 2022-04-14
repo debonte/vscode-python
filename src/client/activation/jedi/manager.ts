@@ -6,6 +6,8 @@ import '../../common/extensions';
 
 import { inject, injectable, named } from 'inversify';
 
+import { Disposable } from 'vscode';
+import { Middleware } from 'vscode-languageclient';
 import { ICommandManager } from '../../common/application/types';
 import { IDisposable, Resource } from '../../common/types';
 import { debounceSync } from '../../common/utils/decorators';
@@ -115,6 +117,9 @@ export class JediLanguageServerManager implements ILanguageServerManager {
         this.connected = false;
         this.middleware?.disconnect();
     }
+
+    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-empty-function
+    public setNotebookMiddleware(_notebookAddon: Middleware & Disposable): void {}
 
     @debounceSync(1000)
     protected restartLanguageServerDebounced(): void {
