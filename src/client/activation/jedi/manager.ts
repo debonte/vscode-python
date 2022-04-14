@@ -112,6 +112,9 @@ export class JediLanguageServerManager implements ILanguageServerManager {
         }
     }
 
+    // eslint-disable-next-line class-methods-use-this, @typescript-eslint/no-empty-function
+    public setNotebookMiddleware(_notebookAddon: Middleware & Disposable): void {}
+
     @debounceSync(1000)
     protected restartLanguageServerDebounced(): void {
         this.restartLanguageServer().ignoreErrors();
