@@ -30,6 +30,7 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
     private disposables: IDisposable[] = [];
     private connected: boolean = false;
     private lsVersion: string | undefined;
+    private jupyterPythonPathFunction: ((uri: Uri) => Promise<string | undefined>) | undefined;
 
     constructor(
         @inject(IServiceContainer) private readonly serviceContainer: IServiceContainer,
@@ -90,8 +91,13 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
     }
 
     public registerJupyterPythonPathFunction(func: (uri: Uri) => Promise<string | undefined>): void {
-        if (this.middleware) {
-            this.middleware.registerJupyterPythonPathFunction(func);
+        this.jupyterPythonPathFunction = func;
+        this.applyJupyterPythonPathFunction();
+    }
+
+    private applyJupyterPythonPathFunction() {
+        if (this.jupyterPythonPathFunction && this.middleware) {
+            this.middleware.registerJupyterPythonPathFunction(this.jupyterPythonPathFunction);
         }
     }
 
@@ -126,6 +132,7 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
             LanguageServerType.Node,
             this.lsVersion,
         );
+        this.applyJupyterPythonPathFunction();
 
         // Make sure the middleware is connected if we restart and we we're already connected.
         if (this.connected) {
