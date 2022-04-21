@@ -4,15 +4,13 @@ import '../../common/extensions';
 
 import { inject, injectable, named } from 'inversify';
 
-import { Disposable } from 'vscode';
-import { ICommandManager } from '../../common/application/types';
+import { Uri } from 'vscode';
 import { IDisposable, Resource } from '../../common/types';
 import { debounceSync } from '../../common/utils/decorators';
 import { IServiceContainer } from '../../ioc/types';
 import { PythonEnvironment } from '../../pythonEnvironments/info';
 import { captureTelemetry } from '../../telemetry';
 import { EventName } from '../../telemetry/constants';
-import { Commands } from '../commands';
 import { LanguageClientMiddleware } from '../languageClientMiddleware';
 import {
     ILanguageServerAnalysisOptions,
@@ -22,7 +20,6 @@ import {
     LanguageServerType,
 } from '../types';
 import { traceDecoratorError, traceDecoratorVerbose } from '../../logging';
-import { Middleware } from 'vscode-languageclient';
 
 @injectable()
 export class NodeLanguageServerManager implements ILanguageServerManager {
@@ -40,14 +37,13 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
         @named(LanguageServerType.Node)
         private readonly analysisOptions: ILanguageServerAnalysisOptions,
         @inject(ILanguageServerFolderService)
-        private readonly folderService: ILanguageServerFolderService,
-        @inject(ICommandManager) commandManager: ICommandManager,
+        private readonly folderService: ILanguageServerFolderService, // @inject(ICommandManager) commandManager: ICommandManager,
     ) {
-        this.disposables.push(
-            commandManager.registerCommand(Commands.RestartLS, () => {
-                this.restartLanguageServer().ignoreErrors();
-            }),
-        );
+        // this.disposables.push(
+        //     commandManager.registerCommand(Commands.RestartLS, () => {
+        //         this.restartLanguageServer().ignoreErrors();
+        //     }),
+        // );
     }
 
     private static versionTelemetryProps(instance: NodeLanguageServerManager) {
@@ -93,11 +89,9 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
         this.middleware?.disconnect();
     }
 
-    // QUESTIONS:
-    // Better way to install the injected middleware rather than leveraging existing LanguageClientMiddleware.notebookAddon?
-    public setNotebookMiddleware(notebookAddon: Middleware & Disposable): void {
+    public registerJupyterPythonPathFunction(func: (uri: Uri) => Promise<string | undefined>): void {
         if (this.middleware) {
-            this.middleware.notebookAddon = notebookAddon;
+            this.middleware.registerJupyterPythonPathFunction(func);
         }
     }
 

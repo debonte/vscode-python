@@ -180,6 +180,7 @@ export interface IPythonSettings {
     readonly condaPath: string;
     readonly pipenvPath: string;
     readonly poetryPath: string;
+    readonly pylanceLspNotebooksEnabled: boolean;
     readonly downloadLanguageServer: boolean;
     readonly devOptions: string[];
     readonly linting: ILintingSettings;

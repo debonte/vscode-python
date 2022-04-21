@@ -34,6 +34,7 @@ import {
 import { JediLanguageServerActivator } from './jedi/activator';
 import { LoadLanguageServerExtension } from './common/loadLanguageServerExtension';
 import { PartialModeStatusItem } from './partialModeStatus';
+import { LspNotebooksExperiment } from './node/lspNotebooksExperiment';
 
 export function registerTypes(serviceManager: IServiceManager, languageServerType: LanguageServerType): void {
     serviceManager.addSingleton<IExtensionActivationService>(IExtensionActivationService, PartialModeStatusItem);
@@ -76,6 +77,8 @@ export function registerTypes(serviceManager: IServiceManager, languageServerTyp
             ILanguageServerFolderService,
             NodeLanguageServerFolderService,
         );
+        serviceManager.addSingleton<LspNotebooksExperiment>(LspNotebooksExperiment, LspNotebooksExperiment);
+        serviceManager.addBinding(LspNotebooksExperiment, IExtensionSingleActivationService);
     } else if (languageServerType === LanguageServerType.Jedi) {
         serviceManager.add<ILanguageServerActivator>(
             ILanguageServerActivator,
