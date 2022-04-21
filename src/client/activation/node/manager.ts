@@ -37,6 +37,7 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
     private connected = false;
 
     private lsVersion: string | undefined;
+    private jupyterPythonPathFunction: ((uri: Uri) => Promise<string | undefined>) | undefined;
 
     private started = false;
 
@@ -108,8 +109,13 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
     }
 
     public registerJupyterPythonPathFunction(func: (uri: Uri) => Promise<string | undefined>): void {
-        if (this.middleware) {
-            this.middleware.registerJupyterPythonPathFunction(func);
+        this.jupyterPythonPathFunction = func;
+        this.applyJupyterPythonPathFunction();
+    }
+
+    private applyJupyterPythonPathFunction() {
+        if (this.jupyterPythonPathFunction && this.middleware) {
+            this.middleware.registerJupyterPythonPathFunction(this.jupyterPythonPathFunction);
         }
     }
 
@@ -139,6 +145,7 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
         const options = await this.analysisOptions.getAnalysisOptions();
         this.middleware = new LanguageClientMiddleware(this.serviceContainer, LanguageServerType.Node, this.lsVersion);
         options.middleware = this.middleware;
+        this.applyJupyterPythonPathFunction();
 
         // Make sure the middleware is connected if we restart and we we're already connected.
         if (this.connected) {
