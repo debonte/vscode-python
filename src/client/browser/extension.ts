@@ -82,6 +82,7 @@ async function runPylance(
         };
 
         const languageClient = new LanguageClient('python', 'Python Language Server', clientOptions, worker);
+        languageClient.registerProposedFeatures();
 
         languageClient.onDidChangeState((e): void => {
             // The client's on* methods must be called after the client has started, but if called too

@@ -4,7 +4,6 @@ import '../../common/extensions';
 
 import { inject, injectable, named } from 'inversify';
 
-import { Uri } from 'vscode';
 import { IDisposable, Resource } from '../../common/types';
 import { debounceSync } from '../../common/utils/decorators';
 import { IServiceContainer } from '../../ioc/types';
@@ -20,6 +19,7 @@ import {
     LanguageServerType,
 } from '../types';
 import { traceDecoratorError, traceDecoratorVerbose } from '../../logging';
+import { JupyterExtensionIntegration } from '../../jupyter/jupyterIntegration';
 
 @injectable()
 export class NodeLanguageServerManager implements ILanguageServerManager {
@@ -30,7 +30,6 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
     private disposables: IDisposable[] = [];
     private connected: boolean = false;
     private lsVersion: string | undefined;
-    private jupyterPythonPathFunction: ((uri: Uri) => Promise<string | undefined>) | undefined;
 
     constructor(
         @inject(IServiceContainer) private readonly serviceContainer: IServiceContainer,
@@ -38,7 +37,8 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
         @named(LanguageServerType.Node)
         private readonly analysisOptions: ILanguageServerAnalysisOptions,
         @inject(ILanguageServerFolderService)
-        private readonly folderService: ILanguageServerFolderService, // @inject(ICommandManager) commandManager: ICommandManager,
+        private readonly folderService: ILanguageServerFolderService,
+        @inject(JupyterExtensionIntegration) private readonly jupyterExtensionIntegration: JupyterExtensionIntegration,
     ) {
         // this.disposables.push(
         //     commandManager.registerCommand(Commands.RestartLS, () => {
@@ -90,17 +90,6 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
         this.middleware?.disconnect();
     }
 
-    public registerJupyterPythonPathFunction(func: (uri: Uri) => Promise<string | undefined>): void {
-        this.jupyterPythonPathFunction = func;
-        this.applyJupyterPythonPathFunction();
-    }
-
-    private applyJupyterPythonPathFunction() {
-        if (this.jupyterPythonPathFunction && this.middleware) {
-            this.middleware.registerJupyterPythonPathFunction(this.jupyterPythonPathFunction);
-        }
-    }
-
     @debounceSync(1000)
     protected restartLanguageServerDebounced(): void {
         this.restartLanguageServer().ignoreErrors();
@@ -132,7 +121,11 @@ export class NodeLanguageServerManager implements ILanguageServerManager {
             LanguageServerType.Node,
             this.lsVersion,
         );
-        this.applyJupyterPythonPathFunction();
+
+        const jupyterPythonPathFunction = this.jupyterExtensionIntegration.getJupyterPythonPathFunction();
+        if (jupyterPythonPathFunction) {
+            this.middleware.registerJupyterPythonPathFunction(jupyterPythonPathFunction);
+        }
 
         // Make sure the middleware is connected if we restart and we we're already connected.
         if (this.connected) {
