@@ -4,7 +4,7 @@
 import { assert } from 'chai';
 import * as path from 'path';
 import * as sinon from 'sinon';
-import { CodeLens, commands, env, window } from 'vscode';
+import { CodeLens, commands, env, NotebookDocument, window } from 'vscode';
 import { IExperimentService } from '../../client/common/types';
 import { IServiceManager } from '../../client/ioc/types';
 import { TensorBoardNbextensionCodeLensProvider } from '../../client/tensorBoard/nbextensionCodeLensProvider';
@@ -77,7 +77,7 @@ suite('TensorBoard code lens provider', () => {
             assert(window.activeTextEditor, 'No active editor');
             const codeLenses = await commands.executeCommand<CodeLens[]>(
                 'vscode.executeCodeLensProvider',
-                notebook.document.cellAt(0).document.uri,
+                ((notebook.document as unknown) as NotebookDocument).cellAt(0).document.uri,
             );
             assert.ok(codeLenses?.length && codeLenses.length > 0, 'Code lens provider did not provide codelenses');
         });
@@ -134,7 +134,7 @@ suite('TensorBoard code lens provider', () => {
             assert(window.activeTextEditor, 'No active editor');
             const codeLenses = await commands.executeCommand<CodeLens[]>(
                 'vscode.executeCodeLensProvider',
-                notebook.document.cellAt(0).document.uri,
+                ((notebook.document as unknown) as NotebookDocument).cellAt(0).document.uri,
             );
             assert.ok(codeLenses?.length && codeLenses.length > 0, 'Code lens provider did not provide codelenses');
         });

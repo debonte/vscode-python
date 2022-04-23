@@ -112,7 +112,7 @@ export class JediLanguageServerProxy implements ILanguageServerProxy {
             }
         });
 
-        this.disposables.push(this.languageClient.start());
+        await this.languageClient.start();
         await this.serverReady();
 
         return Promise.resolve();
@@ -132,7 +132,7 @@ export class JediLanguageServerProxy implements ILanguageServerProxy {
     )
     protected async serverReady(): Promise<void> {
         if (this.languageClient) {
-            await this.languageClient.onReady();
+            await this.languageClient.start();
         }
     }
 
