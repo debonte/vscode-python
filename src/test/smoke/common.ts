@@ -46,10 +46,10 @@ export async function enableJedi(enable: boolean | undefined): Promise<void> {
     await updateSetting('languageServer', 'Jedi');
 }
 
-export async function openNotebook(file: string): Promise<vscode.NotebookEditor> {
+export async function openNotebook(file: string): Promise<vscode.TextEditor> {
     await verifyExtensionIsAvailable(JUPYTER_EXTENSION_ID);
     await vscode.commands.executeCommand('vscode.openWith', vscode.Uri.file(file), 'jupyter-notebook');
-    const notebook = vscode.window.activeNotebookEditor;
+    const notebook = vscode.window.activeTextEditor;
     assert(notebook, 'Notebook did not open');
     return notebook;
 }
@@ -61,12 +61,12 @@ export async function openNotebookAndWaitForLS(file: string): Promise<vscode.Not
     // to fetch data for completion, hover.etc.
     await vscode.commands.executeCommand(
         'vscode.executeCompletionItemProvider',
-        notebook.document.cellAt(0).document.uri,
+        ((notebook.document as unknown) as vscode.NotebookDocument).cellAt(0).document.uri,
         new vscode.Position(0, 0),
     );
     // For for LS to get extracted.
     await sleep(10_000);
-    return notebook.document;
+    return (notebook.document as unknown) as vscode.NotebookDocument;
 }
 
 export async function openFileAndWaitForLS(file: string): Promise<vscode.TextDocument> {

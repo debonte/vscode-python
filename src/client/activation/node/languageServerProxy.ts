@@ -131,13 +131,13 @@ export class NodeLanguageServerProxy implements ILanguageServerProxy {
 
             this.disposables.push(
                 this.workspace.onDidGrantWorkspaceTrust(() => {
-                    this.languageClient!.onReady().then(() => {
+                    this.languageClient!.start().then(() => {
                         this.languageClient!.sendNotification('python/workspaceTrusted', { isTrusted: true });
                     });
                 }),
             );
 
-            this.disposables.push(this.languageClient.start());
+            this.languageClient.start();
             await this.serverReady();
 
             if (this.disposed) {
@@ -163,7 +163,7 @@ export class NodeLanguageServerProxy implements ILanguageServerProxy {
             await sleep(100);
         }
         if (this.languageClient) {
-            await this.languageClient.onReady();
+            await this.languageClient.start();
         }
         this.startupCompleted.resolve();
     }

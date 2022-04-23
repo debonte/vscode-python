@@ -121,9 +121,8 @@ async function runPylance(
             );
         });
 
-        const disposable = languageClient.start();
+        await languageClient.start();
 
-        context.subscriptions.push(disposable);
         context.subscriptions.push(createStatusItem());
     } catch (e) {
         console.log(e);
