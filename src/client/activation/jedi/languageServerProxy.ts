@@ -93,7 +93,7 @@ export class JediLanguageServerProxy implements ILanguageServerProxy {
         options: LanguageClientOptions,
     ): Promise<void> {
         if (this.languageClient) {
-            return this.serverReady();
+            return this.languageClient.start();
         }
 
         this.lsVersion =
@@ -114,7 +114,6 @@ export class JediLanguageServerProxy implements ILanguageServerProxy {
         });
 
         await this.languageClient.start();
-        await this.serverReady();
 
         return Promise.resolve();
     }
@@ -131,12 +130,6 @@ export class JediLanguageServerProxy implements ILanguageServerProxy {
         undefined,
         JediLanguageServerProxy.versionTelemetryProps,
     )
-    protected async serverReady(): Promise<void> {
-        if (this.languageClient) {
-            await this.languageClient.start();
-        }
-    }
-
     private registerHandlers() {
         if (this.disposed) {
             // Check if it got disposed in the interim.

@@ -17,6 +17,8 @@ interface BrowserConfig {
     distUrl: string; // URL to Pylance's dist folder.
 }
 
+let languageClient: LanguageClient | undefined;
+
 export async function activate(context: vscode.ExtensionContext): Promise<void> {
     // Run in a promise and return early so that VS Code can go activate Pylance.
     await loadLocalizedStringsForBrowser();
@@ -33,6 +35,10 @@ export async function activate(context: vscode.ExtensionContext): Promise<void> 
             runPylance(context, newPylanceExtension);
         }
     });
+}
+
+export function deactivate(): Promise<void> | undefined {
+    return languageClient?.stop();
 }
 
 async function runPylance(
@@ -81,7 +87,7 @@ async function runPylance(
             middleware,
         };
 
-        const languageClient = new LanguageClient('python', 'Python Language Server', clientOptions, worker);
+        languageClient = new LanguageClient('python', 'Python Language Server', clientOptions, worker);
         languageClient.registerProposedFeatures();
 
         languageClient.onDidChangeState((e): void => {
@@ -94,11 +100,11 @@ async function runPylance(
 
             context.subscriptions.push(
                 vscode.commands.registerCommand('python.viewLanguageServerOutput', () =>
-                    languageClient.outputChannel.show(),
+                    languageClient!.outputChannel.show(),
                 ),
             );
 
-            languageClient.onTelemetry(
+            languageClient!.onTelemetry(
                 (telemetryEvent: {
                     EventName: EventName;
                     Properties: { method: string };
