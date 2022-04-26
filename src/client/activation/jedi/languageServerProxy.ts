@@ -87,9 +87,14 @@ export class JediLanguageServerProxy implements ILanguageServerProxy {
         interpreter: PythonEnvironment | undefined,
         options: LanguageClientOptions,
     ): Promise<void> {
+<<<<<<< HEAD
         if (this.languageServerTask) {
             await this.languageServerTask;
             return;
+=======
+        if (this.languageClient) {
+            return this.languageClient.start();
+>>>>>>> 29e9e18e6 (Fix usage of LanguageClient.start/stop)
         }
 
         this.lsVersion =
@@ -98,8 +103,23 @@ export class JediLanguageServerProxy implements ILanguageServerProxy {
         this.languageClient = await this.factory.createLanguageClient(resource, interpreter, options);
         this.registerHandlers();
 
+<<<<<<< HEAD
         this.languageServerTask = this.languageClient.start();
         await this.languageServerTask;
+=======
+        this.languageClient.onDidChangeState((e) => {
+            // The client's on* methods must be called after the client has started, but if called too
+            // late the server may have already sent a message (which leads to failures). Register
+            // these on the state change to running to ensure they are ready soon enough.
+            if (e.newState === State.Running) {
+                this.registerHandlers();
+            }
+        });
+
+        await this.languageClient.start();
+
+        return Promise.resolve();
+>>>>>>> 29e9e18e6 (Fix usage of LanguageClient.start/stop)
     }
 
     // eslint-disable-next-line class-methods-use-this
