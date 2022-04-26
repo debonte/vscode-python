@@ -142,7 +142,7 @@ export class NodeLanguageServerProxy implements ILanguageServerProxy {
                 }),
             );
 
-            this.languageClient.start();
+            await this.languageClient.start();
             await this.serverReady();
 
             if (this.disposed) {
