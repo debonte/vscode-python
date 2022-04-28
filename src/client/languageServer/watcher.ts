@@ -34,7 +34,6 @@ import { NoneLSExtensionManager } from './noneLSExtensionManager';
 import { PylanceLSExtensionManager } from './pylanceLSExtensionManager';
 import { ILanguageServerExtensionManager, ILanguageServerWatcher } from './types';
 import { LspNotebooksExperiment } from '../activation/node/lspNotebooksExperiment';
-import { JupyterExtensionIntegration } from '../jupyter/jupyterIntegration';
 
 @injectable()
 /**
@@ -74,7 +73,6 @@ export class LanguageServerWatcher
         @inject(IExtensions) private readonly extensions: IExtensions,
         @inject(IApplicationShell) readonly applicationShell: IApplicationShell,
         @inject(LspNotebooksExperiment) private readonly lspNotebooksExperiment: LspNotebooksExperiment,
-        @inject(JupyterExtensionIntegration) private readonly jupyterExtensionIntegration: JupyterExtensionIntegration,
         @inject(IDisposableRegistry) readonly disposables: IDisposableRegistry,
     ) {
         this.workspaceInterpreters = new Map();
@@ -236,7 +234,6 @@ export class LanguageServerWatcher
                     this.extensions,
                     this.applicationShell,
                     this.lspNotebooksExperiment,
-                    this.jupyterExtensionIntegration,
                 );
                 break;
             case LanguageServerType.None:
