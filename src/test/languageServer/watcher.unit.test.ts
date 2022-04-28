@@ -5,6 +5,7 @@ import * as assert from 'assert';
 import * as sinon from 'sinon';
 import { ConfigurationChangeEvent, Disposable, Uri, WorkspaceFolder, WorkspaceFoldersChangeEvent } from 'vscode';
 import { JediLanguageServerManager } from '../../client/activation/jedi/manager';
+import { LspNotebooksExperiment } from '../../client/activation/node/lspNotebooksExperiment';
 import { NodeLanguageServerManager } from '../../client/activation/node/manager';
 import { ILanguageServerOutputChannel, LanguageServerType } from '../../client/activation/types';
 import { IApplicationShell, ICommandManager, IWorkspaceService } from '../../client/common/application/types';
@@ -19,6 +20,7 @@ import { LanguageService } from '../../client/common/utils/localize';
 import { IEnvironmentVariablesProvider } from '../../client/common/variables/types';
 import { IInterpreterHelper, IInterpreterService } from '../../client/interpreter/contracts';
 import { IServiceContainer } from '../../client/ioc/types';
+import { JupyterExtensionIntegration } from '../../client/jupyter/jupyterIntegration';
 import { JediLSExtensionManager } from '../../client/languageServer/jediLSExtensionManager';
 import { NoneLSExtensionManager } from '../../client/languageServer/noneLSExtensionManager';
 import { PylanceLSExtensionManager } from '../../client/languageServer/pylanceLSExtensionManager';
@@ -71,6 +73,8 @@ suite('Language server watcher', () => {
                 },
             } as unknown) as IExtensions,
             {} as IApplicationShell,
+            {} as LspNotebooksExperiment,
+            {} as JupyterExtensionIntegration,
             [] as Disposable[],
         );
     });
@@ -116,6 +120,8 @@ suite('Language server watcher', () => {
                 },
             } as unknown) as IExtensions,
             {} as IApplicationShell,
+            {} as LspNotebooksExperiment,
+            {} as JupyterExtensionIntegration,
             disposables,
         );
 
@@ -159,6 +165,8 @@ suite('Language server watcher', () => {
                 },
             } as unknown) as IExtensions,
             {} as IApplicationShell,
+            {} as LspNotebooksExperiment,
+            {} as JupyterExtensionIntegration,
             disposables,
         );
 
@@ -230,6 +238,8 @@ suite('Language server watcher', () => {
                 },
             } as unknown) as IExtensions,
             {} as IApplicationShell,
+            {} as LspNotebooksExperiment,
+            {} as JupyterExtensionIntegration,
             [] as Disposable[],
         );
 
@@ -301,6 +311,8 @@ suite('Language server watcher', () => {
                 },
             } as unknown) as IExtensions,
             {} as IApplicationShell,
+            {} as LspNotebooksExperiment,
+            {} as JupyterExtensionIntegration,
             [] as Disposable[],
         );
 
@@ -376,6 +388,8 @@ suite('Language server watcher', () => {
                 },
             } as unknown) as IExtensions,
             {} as IApplicationShell,
+            {} as LspNotebooksExperiment,
+            {} as JupyterExtensionIntegration,
             [] as Disposable[],
         );
 
@@ -442,6 +456,8 @@ suite('Language server watcher', () => {
                 },
             } as unknown) as IExtensions,
             {} as IApplicationShell,
+            {} as LspNotebooksExperiment,
+            {} as JupyterExtensionIntegration,
             [] as Disposable[],
         );
 
@@ -501,6 +517,8 @@ suite('Language server watcher', () => {
                 },
             } as unknown) as IExtensions,
             {} as IApplicationShell,
+            {} as LspNotebooksExperiment,
+            {} as JupyterExtensionIntegration,
             [] as Disposable[],
         );
 
@@ -561,6 +579,8 @@ suite('Language server watcher', () => {
             ({
                 showWarningMessage: () => Promise.resolve(undefined),
             } as unknown) as IApplicationShell,
+            {} as LspNotebooksExperiment,
+            {} as JupyterExtensionIntegration,
             [] as Disposable[],
         );
 
@@ -615,6 +635,8 @@ suite('Language server watcher', () => {
                 },
             } as unknown) as IExtensions,
             {} as IApplicationShell,
+            {} as LspNotebooksExperiment,
+            {} as JupyterExtensionIntegration,
             [] as Disposable[],
         );
 
@@ -700,6 +722,8 @@ suite('Language server watcher', () => {
                 ({
                     showWarningMessage: () => Promise.resolve(undefined),
                 } as unknown) as IApplicationShell,
+                {} as LspNotebooksExperiment,
+                {} as JupyterExtensionIntegration,
                 [] as Disposable[],
             );
 
@@ -775,6 +799,8 @@ suite('Language server watcher', () => {
                 ({
                     showWarningMessage: () => Promise.resolve(undefined),
                 } as unknown) as IApplicationShell,
+                {} as LspNotebooksExperiment,
+                {} as JupyterExtensionIntegration,
                 [] as Disposable[],
             );
 
