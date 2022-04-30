@@ -123,7 +123,6 @@ export class NodeLanguageServerProxy implements ILanguageServerProxy {
             options.connectionOptions = { cancellationStrategy: this.cancellationStrategy };
 
             this.languageClient = await this.factory.createLanguageClient(resource, interpreter, options);
-            this.languageClient.registerProposedFeatures();
 
             this.languageClient.onDidChangeState((e) => {
                 // The client's on* methods must be called after the client has started, but if called too

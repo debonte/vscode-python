@@ -19,7 +19,6 @@
     "languageServerVersion": "0.5.30",
     "publisher": "ms-python",
     "enabledApiProposals": [
-        "notebookDocumentEvents"
     ],
     "author": {
         "name": "Microsoft Corporation"
@@ -1864,9 +1863,9 @@
         "vscode-debugprotocol": "^1.28.0",
         "vscode-extension-telemetry": "0.4.5",
         "vscode-jsonrpc": "8.0.0-next.8",
-        "vscode-languageclient": "8.0.0-next.16",
-        "vscode-languageserver": "8.0.0-next.11",
-        "vscode-languageserver-protocol": "3.17.0-next.17",
+        "vscode-languageclient": "8.0.0-next.18",
+        "vscode-languageserver": "8.0.0-next.14",
+        "vscode-languageserver-protocol": "3.17.0-next.20",
         "vscode-tas-client": "^0.1.22",
         "winreg": "^1.2.4",
         "xml2js": "^0.4.19"
